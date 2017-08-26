@@ -50,7 +50,6 @@ Article.loadAll = rows => {
 */
 
   Article.all = rows.map(ele => new Article(ele));
-  console.log(Article.all);
 
 };
 
@@ -64,34 +63,44 @@ Article.fetchAll = callback => {
   )
 };
 
-console.log(Article.all);
-
 // TODO: Chain together a `map` and a `reduce` call to get a rough count of all words in all articles.
 Article.numWordsAll = () => {
-  console.log(Article.all);
-  var numWords = Article.all.map((article) => article.body.split(' ')).reduce((acc, num) => acc + num).length;
-  return numWords;
+  return Article.all.map((article) => article.body.split(' ')).reduce((acc, num) => acc + num).length;
 };
 
 // TODO: Chain together a `map` and a `reduce` call to produce an array of unique author names. You will
 // probably need to use the optional accumulator argument in your reduce call.
 
 Article.allAuthors = () => {
-  Article.all.map(function(article){
-    return article.author.length;
-  });
+  return Article.all.map(function(author){
+    return author.author;
+  })
+  .reduce(function(acc, num){
+    if(acc.indexOf(num) < 0) acc.push(num);
+    return acc;
+  }, []);
 };
 
 Article.numWordsByAuthor = () => {
-  //return Article.allAuthors().map(author => {
-    // TODO: Transform each author string into an object with properties for
-    // the author's name, as well as the total number of words across all articles
-    // written by the specified author.
-    // HINT: This .map should be setup to return an object literal with two properties.
-    // The first property should be pretty straightforward, but you will need to chain
-    // some combination of filter, map, and reduce to get the value for the second
-    // property.
-  //})
+  return Article.allAuthors().map(function(author) {
+      return {
+        author: author,
+        words: Article.all.map(function(article){
+          if(article.author === author){
+            console.log(article.body.split(' '));
+            return article.body.split(' ').reduce((acc, num) => acc + num).length;
+          }
+          //use .filter(), .map(something.split(' ')), .reduce()
+    })
+  };
+  // TODO: Transform each author string into an object with properties for
+  // the author's name, as well as the total number of words across all articles
+  // written by the specified author.
+  // HINT: This .map should be setup to return an object literal with two properties.
+  // The first property should be pretty straightforward, but you will need to chain
+  // some combination of filter, map, and reduce to get the value for the second
+  // property.
+});
 };
 
 Article.truncateTable = callback => {
